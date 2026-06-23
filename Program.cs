@@ -19,7 +19,7 @@ public class Program
     public static void Main()
     {
         // Punto di ingresso della Console App.
-        ApplicazioneNegozio applicazione = new ApplicazioneNegozio();
+        
         // applicazione.Avvia();
         TestNegozioOnline.EseguiTuttiITest();
     }
@@ -304,12 +304,13 @@ public class ElementoCarrello
     }
 
     public void CambiaQuantitaScelta(int nuovaQuantita)
+{
+    if (nuovaQuantita <= 0)
     {
-        // TODO: validare che la nuova quantità sia maggiore di zero.
-        // Se è valida, aggiornare QuantitaScelta.
-        // Se non è valida, lanciare ArgumentException con un messaggio comprensibile.
-        throw new NotImplementedException("Completare il metodo CambiaQuantitaScelta.");
+        throw new ArgumentException("La quantità scelta deve essere maggiore di zero.");
     }
+    QuantitaScelta = nuovaQuantita;
+}
 }
 
 public class Acquisto
