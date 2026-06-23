@@ -42,35 +42,32 @@ public class ApplicazioneNegozio
         CaricaDatiIniziali();
     }
 
-    public void Avvia()
+    private string ScegliRuolo()
+{
+    while (true)
     {
+        // Pulisce la console per tenere la schermata ordinata ad ogni ritorno al menu principale
+        Console.Clear(); 
+        
         Console.WriteLine("=======================================");
-        Console.WriteLine("   BENVENUTO NEL NOSTRO NEGOZIO ONLINE ");
+        Console.WriteLine("            MENU PRINCIPALE            ");
         Console.WriteLine("=======================================");
+        Console.WriteLine("Scegli come accedere al sistema:");
+        Console.WriteLine("1. Accedi come Cliente (Utente)");
+        Console.WriteLine("2. Accedi come Admin (Amministratore)");
+        Console.WriteLine("0. Chiudi l'applicazione (Esci)");
+        Console.Write("Seleziona un'opzione: ");
+        
+        string? input = Console.ReadLine()?.Trim();
 
-        bool continua = true;
-        while (continua)
-        {
-            string ruolo = ScegliRuolo();
-            switch (ruolo)
-            {
-                case "utente":
-                    GestisciMenuUtente();
-                    break;
-                case "amministratore":
-                    GestisciMenuAmministratore();
-                    break;
-                case "esci":
-                    continua = false;
-                    Console.WriteLine("\nGrazie per aver visitato il nostro negozio. Arrivederci!");
-                    break;
-                default:
-                    // Questo default teoricamente non verrà mai raggiunto grazie alla convalida in ScegliRuolo
-                    Console.WriteLine("Scelta non valida. Riprova.");
-                    break;
-            }
-        }
+        if (input == "1") return "utente";
+        if (input == "2") return "amministratore";
+        if (input == "0") return "esci";
+
+        Console.WriteLine("Opzione non valida. Premi un tasto per riprovare...");
+        Console.ReadKey(); // Aspetta che l'utente prema un tasto prima di rifare il Clear
     }
+}
 
     private void CaricaDatiIniziali()
     {
