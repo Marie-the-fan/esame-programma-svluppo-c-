@@ -600,19 +600,52 @@ public class ServizioNegozio
     return carrelloUtente.AggiungiAlCarrello(prodotto, quantita);
 }
 
-    public Acquisto ConfermaAcquisto(Utente utente)
+   public Acquisto ConfermaAcquisto(Utente utente)
+{
+    // 1. Impedire l'acquisto se il carrello è vuoto
+    List<ElementoCarrello> elementi = carrelloUtente.OttieniElementi();
+    if (elementi.Count == 0)
     {
-        // TODO: completare la conferma dell'acquisto.
-        // Regole richieste dalla traccia:
-        // - impedire l'acquisto se il carrello è vuoto;
-        // - ricontrollare che ogni quantità sia valida e disponibile in magazzino;
-        // - creare gli ElementoAcquistato partendo dagli elementi del carrello;
-        // - diminuire la quantità disponibile dei prodotti acquistati;
-        // - registrare l'acquisto nello storico;
-        // - svuotare il carrello dopo un acquisto completato;
-        // - creare e restituire un Acquisto associato all'Utente ricevuto.
-        throw new NotImplementedException("Completare il metodo ConfermaAcquisto.");
+        throw new InvalidOperationException("Il carrello è vuoto. Impossibile procedere con l'acquisto.");
     }
+
+    // 2. Ricontrollare preventivamente che ogni quantità sia valida e disponibile in magazzino
+    foreach (ElementoCarrello elemento in elementi)
+    {
+        Prodotto? prodCatalogo = catalogoProdotti.CercaProdottoPerCodice(elemento.ProdottoSelezionato.CodiceProdotto);
+        if (prodCatalogo == null || elemento.QuantitaScelta > prodCatalogo.QuantitaDisponibile)
+        {
+            throw new InvalidOperationException($"Il prodotto '{elemento.ProdottoSelezionato.Nome}' non è più disponibile nella quantità richiesta.");
+        }
+    }
+
+    // 3. Creare gli ElementoAcquistato partendo dagli elementi del carrello e diminuire lo stock
+    List<ElementoAcquistato> prodottiAcquistati = new List<ElementoAcquistato>();
+    foreach (ElementoCarrello elemento in elementi)
+    {
+        Prodotto prodCatalogo = catalogoProdotti.CercaProdottoPerCodice(elemento.ProdottoSelezionato.CodiceProdotto)!;
+        
+        // Diminuire la quantità disponibile inserendo una variazione negativa
+        prodCatalogo.CambiaQuantita(-elemento.QuantitaScelta);
+
+        // Creazione dell'elemento storico dell'ordine
+        prodottiAcquistati.Add(new ElementoAcquistato(
+            prodCatalogo.CodiceProdotto,
+            prodCatalogo.Nome,
+            elemento.QuantitaScelta,
+            elemento.PrezzoUnitario
+        ));
+    }
+
+    // 4. Creare e registrare l'acquisto nello storico associato all'Utente ricevuto
+    Acquisto nuovoAcquisto = new Acquisto(utente, prodottiAcquistati);
+    storicoAcquisti.RegistraAcquisto(nuovoAcquisto);
+
+    // 5. Svuotare il carrello dopo un acquisto completato
+    carrelloUtente.SvuotaCarrello();
+
+    return nuovoAcquisto;
+}
 
     public List<ReportProdotto> CreaReportProdotti()
     {
