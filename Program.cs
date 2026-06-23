@@ -14,16 +14,16 @@ using System.Linq;
  * Vincolo richiesto: tutto il codice è in un unico file .cs e senza namespace.
  */
 
- public class Program
+public class Program
 {
     public static void Main()
     {
         // Punto di ingresso della Console App.
         ApplicazioneNegozio applicazione = new ApplicazioneNegozio();
-        
+
         // Sblocchiamo l'avvio del negozio reale interattivo
         applicazione.Avvia();
-        
+
         // Se vuoi che i test vengano comunque eseguiti alla chiusura del negozio, lasciarlo attivo:
         // TestNegozioOnline.EseguiTuttiITest();
     }
@@ -53,39 +53,39 @@ public class ApplicazioneNegozio
         catalogoProdotti.AggiungiProdotto(new Prodotto("P003", "Monitor 24 pollici", 149.99m, 7));
         catalogoProdotti.AggiungiProdotto(new Prodotto("P004", "Cavo USB-C", 9.99m, 40));
     }
-public void Avvia()
-{
-    Console.Clear();
-    Console.WriteLine("==================================================================");
-    Console.WriteLine("             SISTEMA GESTIONALE - NEXUS RETAILING                 ");
-    Console.WriteLine("                  Sincronizzazione Magazzino v2.4                 ");
-    Console.WriteLine("==================================================================");
-    Console.WriteLine("\n[SISTEMA] Inizializzazione dei moduli completata con successo.");
-    Console.WriteLine("[INFO] Benvenuto nel portale ufficiale del negozio online.");
-
-    bool continua = true;
-    while (continua)
+    public void Avvia()
     {
-        string ruolo = ScegliRuolo();
-        switch (ruolo)
+        Console.Clear();
+        Console.WriteLine("==================================================================");
+        Console.WriteLine("             SISTEMA GESTIONALE - NEXUS RETAILING                 ");
+        Console.WriteLine("                  Sincronizzazione Magazzino v2.4                 ");
+        Console.WriteLine("==================================================================");
+        Console.WriteLine("\n[SISTEMA] Inizializzazione dei moduli completata con successo.");
+        Console.WriteLine("[INFO] Benvenuto nel portale ufficiale del negozio online.");
+
+        bool continua = true;
+        while (continua)
         {
-            case "utente":
-                GestisciMenuUtente();
-                break;
-            case "amministratore":
-                GestisciMenuAmministratore();
-                break;
-            case "esci":
-                continua = false;
-                Console.Clear();
-                Console.WriteLine("==================================================================");
-                Console.WriteLine("         GRAZIE PER AVER UTILIZZATO I NOSTRI SERVIZI GESTIONALI   ");
-                Console.WriteLine("                      Sessione chiusa correttamente.              ");
-                Console.WriteLine("==================================================================");
-                break;
+            string ruolo = ScegliRuolo();
+            switch (ruolo)
+            {
+                case "utente":
+                    GestisciMenuUtente();
+                    break;
+                case "amministratore":
+                    GestisciMenuAmministratore();
+                    break;
+                case "esci":
+                    continua = false;
+                    Console.Clear();
+                    Console.WriteLine("==================================================================");
+                    Console.WriteLine("         GRAZIE PER AVER UTILIZZATO I NOSTRI SERVIZI GESTIONALI   ");
+                    Console.WriteLine("                      Sessione chiusa correttamente.              ");
+                    Console.WriteLine("==================================================================");
+                    break;
+            }
         }
     }
-}
     private string ScegliRuolo()
     {
         while (true)
@@ -114,162 +114,45 @@ public void Avvia()
     }
 
     private void GestisciMenuUtente()
-{
-    Console.Clear();
-    Console.WriteLine("==================================================================");
-    Console.WriteLine("                  AUTENTICAZIONE UTENTE / CLIENTE                 ");
-    Console.WriteLine("==================================================================");
-    Console.Write("\nSi prega di inserire il proprio Nome Utente per accedere: ");
-    string? nome = Console.ReadLine();
-    
-    if (string.IsNullOrWhiteSpace(nome))
-    {
-        Console.WriteLine("\n[X] ERRORE: Input non valido. Il Nome Utente non può essere vuoto.");
-        Console.WriteLine("Rinvio in corso al menu di identificazione primario...");
-        Console.WriteLine("\nPremere un tasto per continuare...");
-        Console.ReadKey();
-        return;
-    }
-    Utente sessioneUtente = new Utente(nome);
-
-    bool inMenu = true;
-    while (inMenu)
     {
         Console.Clear();
         Console.WriteLine("==================================================================");
-        Console.WriteLine($"  PORTALE CLIENTI  |  Sessione Attiva: {sessioneUtente.Nome.ToUpper()}");
+        Console.WriteLine("                  AUTENTICAZIONE UTENTE / CLIENTE                 ");
         Console.WriteLine("==================================================================");
-        Console.WriteLine("  [1] Esplora il Catalogo Prodotti Disponibili");
-        Console.WriteLine("  [2] Aggiungi un Prodotto al Carrello");
-        Console.WriteLine("  [3] Ispeziona il Carrello Corrente");
-        Console.WriteLine("  [4] Modifica Quantità di un Elemento nel Carrello");
-        Console.WriteLine("  [5] Rimuovi un Prodotto dal Carrello");
-        Console.WriteLine("  [6] Svuota Integralmente il Carrello");
-        Console.WriteLine("  [7] Procedi alla Cassa e Conferma l'Acquisto");
-        Console.WriteLine("  [8] Consulta il Proprio Storico Ordini");
-        Console.WriteLine("  [0] Termina Sessione Cliente (Torna al Menu Principale)");
-        Console.WriteLine("------------------------------------------------------------------");
-        Console.Write("Selezionare l'operazione desiderata: ");
+        Console.Write("\nSi prega di inserire il proprio Nome Utente per accedere: ");
+        string? nome = Console.ReadLine();
 
-        string? scelta = Console.ReadLine();
-        Console.WriteLine();
-
-        switch (scelta)
+        if (string.IsNullOrWhiteSpace(nome))
         {
-            case "1":
-                MostraCatalogo();
-                break;
-
-            case "2":
-                MostraCatalogo();
-                Console.WriteLine("------------------------------------------------------------------");
-                Console.Write("[RICHIESTA] Inserire il codice identificativo del prodotto: ");
-                string? codAdd = Console.ReadLine()?.Trim();
-                int qtaAdd = LeggiInteroPositivo("[RICHIESTA] Specificare la quantità da riservare: ");
-
-                if (servizioNegozio.AggiungiProdottoAlCarrello(codAdd ?? "", qtaAdd))
-                    Console.WriteLine("\n[√] SUCCESSO: L'articolo è stato registrato nel carrello.");
-                else
-                    Console.WriteLine("\n[X] ERRORE: Impossibile elaborare la richiesta. Verificare il codice o lo stock disponibile.");
-                break;
-
-            case "3":
-                MostraCarrello();
-                break;
-
-            case "4":
-                MostraCarrello();
-                Console.WriteLine("------------------------------------------------------------------");
-                Console.Write("[RICHIESTA] Inserire il codice del prodotto da modificare: ");
-                string? codMod = Console.ReadLine()?.Trim();
-                int qtaMod = LeggiInteroPositivo("[RICHIESTA] Specificare il nuovo quantitativo totale: ");
-
-                if (carrelloUtente.ModificaQuantitaNelCarrello(codMod ?? "", qtaMod))
-                    Console.WriteLine("\n[√] SUCCESSO: Il quantitativo in carrello è stato aggiornato correttamente.");
-                else
-                    Console.WriteLine("\n[X] ERRORE: Aggiornamento respinto. La quantità richiesta eccede lo stock di magazzino o il codice è errato.");
-                break;
-
-            case "5":
-                MostraCarrello();
-                Console.WriteLine("------------------------------------------------------------------");
-                Console.Write("[RICHIESTA] Inserire il codice del prodotto da rimuovere: ");
-                string? codRem = Console.ReadLine()?.Trim();
-
-                if (carrelloUtente.RimuoviDalCarrello(codRem ?? ""))
-                    Console.WriteLine("\n[√] SUCCESSO: L'articolo selezionato è stato rimosso dal carrello.");
-                else
-                    Console.WriteLine("\n[X] ERRORE: Riferimento non trovato all'interno del carrello.");
-                break;
-
-            case "6":
-                Console.Write("[ATTENZIONE] Confermare lo svuotamento totale del carrello? (s/n): ");
-                string? confermaSvuota = Console.ReadLine()?.Trim().ToLower();
-                if (confermaSvuota == "s" || confermaSvuota == "si")
-                {
-                    carrelloUtente.SvuotaCarrello();
-                    Console.WriteLine("\n[√] SUCCESSO: Il carrello è stato completamente azzerato.");
-                }
-                else
-                {
-                    Console.WriteLine("\n[i] INFO: Operazione annullata. Nessuna modifica applicata.");
-                }
-                break;
-
-            case "7":
-                try
-                {
-                    Console.WriteLine("[PROCESSO] Elaborazione della transazione finanziaria in corso...");
-                    Acquisto confermato = servizioNegozio.ConfermaAcquisto(sessioneUtente);
-                    Console.WriteLine("\n[√] TRANSAZIONE COMPLETATA: L'ordine è stato preso in carico dal magazzino!");
-                    servizioNegozio.StampaAcquisto(confermato);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"\n[X] ERRORE DI TRANSAZIONE: Impossibile finalizzare l'ordine. Dettaglio: {ex.Message}");
-                }
-                break;
-
-            case "8":
-                MostraStoricoUtente();
-                break;
-
-            case "0":
-                inMenu = false;
-                break;
-
-            default:
-                Console.WriteLine("[X] NOTA: Selezione non valida. Si prega di utilizzare i codici numerici previsti.");
-                break;
-        }
-
-        if (inMenu)
-        {
-            Console.WriteLine("\nPremere un tasto per tornare al pannello principale cliente...");
+            Console.WriteLine("\n[X] ERRORE: Input non valido. Il Nome Utente non può essere vuoto.");
+            Console.WriteLine("Rinvio in corso al menu di identificazione primario...");
+            Console.WriteLine("\nPremere un tasto per continuare...");
             Console.ReadKey();
+            return;
         }
-    }
-}    private void GestisciMenuAmministratore()
-    {
+        Utente sessioneUtente = new Utente(nome);
+
         bool inMenu = true;
         while (inMenu)
         {
-            Console.Clear(); // Pulisce lo schermo all'inizio di ogni iterazione dell'admin
-            Console.WriteLine("=======================================");
-            Console.WriteLine("          MENU AMMINISTRATORE          ");
-            Console.WriteLine("=======================================");
-            Console.WriteLine("1. Visualizza catalogo completo");
-            Console.WriteLine("2. Inserisci un nuovo prodotto nel catalogo");
-            Console.WriteLine("3. Elimina un prodotto dal catalogo");
-            Console.WriteLine("4. Modifica il prezzo di un prodotto");
-            Console.WriteLine("5. Modifica stock di magazzino (Aumenta/Diminuisci)");
-            Console.WriteLine("6. Visualizza storico di tutti gli acquisti del negozio");
-            Console.WriteLine("7. Visualizza report vendite e giacenze");
-            Console.WriteLine("0. Torna al menu principale");
-            Console.Write("Seleziona un'opzione: ");
+            Console.Clear();
+            Console.WriteLine("==================================================================");
+            Console.WriteLine($"  PORTALE CLIENTI  |  Sessione Attiva: {sessioneUtente.Nome.ToUpper()}");
+            Console.WriteLine("==================================================================");
+            Console.WriteLine("  [1] Esplora il Catalogo Prodotti Disponibili");
+            Console.WriteLine("  [2] Aggiungi un Prodotto al Carrello");
+            Console.WriteLine("  [3] Ispeziona il Carrello Corrente");
+            Console.WriteLine("  [4] Modifica Quantità di un Elemento nel Carrello");
+            Console.WriteLine("  [5] Rimuovi un Prodotto dal Carrello");
+            Console.WriteLine("  [6] Svuota Integralmente il Carrello");
+            Console.WriteLine("  [7] Procedi alla Cassa e Conferma l'Acquisto");
+            Console.WriteLine("  [8] Consulta il Proprio Storico Ordini");
+            Console.WriteLine("  [0] Termina Sessione Cliente (Torna al Menu Principale)");
+            Console.WriteLine("------------------------------------------------------------------");
+            Console.Write("Selezionare l'operazione desiderata: ");
 
             string? scelta = Console.ReadLine();
-            Console.WriteLine(); // Spazio per formattazione
+            Console.WriteLine();
 
             switch (scelta)
             {
@@ -278,98 +161,215 @@ public void Avvia()
                     break;
 
                 case "2":
-                    Console.Write("Inserisci nuovo codice prodotto: ");
+                    MostraCatalogo();
+                    Console.WriteLine("------------------------------------------------------------------");
+                    Console.Write("[RICHIESTA] Inserire il codice identificativo del prodotto: ");
+                    string? codAdd = Console.ReadLine()?.Trim();
+                    int qtaAdd = LeggiInteroPositivo("[RICHIESTA] Specificare la quantità da riservare: ");
+
+                    if (servizioNegozio.AggiungiProdottoAlCarrello(codAdd ?? "", qtaAdd))
+                        Console.WriteLine("\n[√] SUCCESSO: L'articolo è stato registrato nel carrello.");
+                    else
+                        Console.WriteLine("\n[X] ERRORE: Impossibile elaborare la richiesta. Verificare il codice o lo stock disponibile.");
+                    break;
+
+                case "3":
+                    MostraCarrello();
+                    break;
+
+                case "4":
+                    MostraCarrello();
+                    Console.WriteLine("------------------------------------------------------------------");
+                    Console.Write("[RICHIESTA] Inserire il codice del prodotto da modificare: ");
+                    string? codMod = Console.ReadLine()?.Trim();
+                    int qtaMod = LeggiInteroPositivo("[RICHIESTA] Specificare il nuovo quantitativo totale: ");
+
+                    if (carrelloUtente.ModificaQuantitaNelCarrello(codMod ?? "", qtaMod))
+                        Console.WriteLine("\n[√] SUCCESSO: Il quantitativo in carrello è stato aggiornato correttamente.");
+                    else
+                        Console.WriteLine("\n[X] ERRORE: Aggiornamento respinto. La quantità richiesta eccede lo stock di magazzino o il codice è errato.");
+                    break;
+
+                case "5":
+                    MostraCarrello();
+                    Console.WriteLine("------------------------------------------------------------------");
+                    Console.Write("[RICHIESTA] Inserire il codice del prodotto da rimuovere: ");
+                    string? codRem = Console.ReadLine()?.Trim();
+
+                    if (carrelloUtente.RimuoviDalCarrello(codRem ?? ""))
+                        Console.WriteLine("\n[√] SUCCESSO: L'articolo selezionato è stato rimosso dal carrello.");
+                    else
+                        Console.WriteLine("\n[X] ERRORE: Riferimento non trovato all'interno del carrello.");
+                    break;
+
+                case "6":
+                    Console.Write("[ATTENZIONE] Confermare lo svuotamento totale del carrello? (s/n): ");
+                    string? confermaSvuota = Console.ReadLine()?.Trim().ToLower();
+                    if (confermaSvuota == "s" || confermaSvuota == "si")
+                    {
+                        carrelloUtente.SvuotaCarrello();
+                        Console.WriteLine("\n[√] SUCCESSO: Il carrello è stato completamente azzerato.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("\n[i] INFO: Operazione annullata. Nessuna modifica applicata.");
+                    }
+                    break;
+
+                case "7":
+                    try
+                    {
+                        Console.WriteLine("[PROCESSO] Elaborazione della transazione finanziaria in corso...");
+                        Acquisto confermato = servizioNegozio.ConfermaAcquisto(sessioneUtente);
+                        Console.WriteLine("\n[√] TRANSAZIONE COMPLETATA: L'ordine è stato preso in carico dal magazzino!");
+                        servizioNegozio.StampaAcquisto(confermato);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"\n[X] ERRORE DI TRANSAZIONE: Impossibile finalizzare l'ordine. Dettaglio: {ex.Message}");
+                    }
+                    break;
+
+                case "8":
+                    MostraStoricoUtente();
+                    break;
+
+                case "0":
+                    inMenu = false;
+                    break;
+
+                default:
+                    Console.WriteLine("[X] NOTA: Selezione non valida. Si prega di utilizzare i codici numerici previsti.");
+                    break;
+            }
+
+            if (inMenu)
+            {
+                Console.WriteLine("\nPremere un tasto per tornare al pannello principale cliente...");
+                Console.ReadKey();
+            }
+        }
+    }
+    private void GestisciMenuAmministratore()
+    {
+        bool inMenu = true;
+        while (inMenu)
+        {
+            Console.Clear();
+            Console.WriteLine("==================================================================");
+            Console.WriteLine("           PANNELLO DI CONTROLLO AMMINISTRATIVO & LOGISTICA       ");
+            Console.WriteLine("==================================================================");
+            Console.WriteLine("  [1] Ispeziona Inventario Completo dei Beni");
+            Console.WriteLine("  [2] Censimento ed Immissione Nuovo Prodotto a Catalogo");
+            Console.WriteLine("  [3] Depennamento / Eliminazione Definitiva di un Prodotto");
+            Console.WriteLine("  [4] Rimodulazione Listino Prezzi (Modifica Prezzo)");
+            Console.WriteLine("  [5] Rettifica Scorte di Magazzino (Variazione Stock)");
+            Console.WriteLine("  [6] Audit Globale Storico Transazioni del Negozio");
+            Console.WriteLine("  [7] Genera Report Vendite e Analisi Giacenze");
+            Console.WriteLine("  [0] Termina Sessione Amministratore (Torna al Menu Principale)");
+            Console.WriteLine("------------------------------------------------------------------");
+            Console.Write("Selezionare l'azione logistica da intraprendere: ");
+
+            string? scelta = Console.ReadLine();
+            Console.WriteLine();
+
+            switch (scelta)
+            {
+                case "1":
+                    MostraCatalogo();
+                    break;
+
+                case "2":
+                    Console.Write("[REQUISITO] Impostare l'ID Codice Univoco del nuovo prodotto: ");
                     string? nuovoCod = Console.ReadLine()?.Trim();
                     if (string.IsNullOrWhiteSpace(nuovoCod))
                     {
-                        Console.WriteLine("\n[ERRORE] Il codice prodotto non può essere vuoto.");
+                        Console.WriteLine("\n[X] ANOMALIA: Il codice identificativo non può essere nullo o composto da soli spazi.");
                         break;
                     }
 
-                    Console.Write("Inserisci nome prodotto: ");
+                    Console.Write("[REQUISITO] Specificare la Designazione Commerciale (Nome): ");
                     string? nuovoNome = Console.ReadLine()?.Trim();
                     if (string.IsNullOrWhiteSpace(nuovoNome))
                     {
-                        Console.WriteLine("\n[ERRORE] Il nome prodotto non può essere vuoto.");
+                        Console.WriteLine("\n[X] ANOMALIA: Il nome commerciale del bene è obbligatorio.");
                         break;
                     }
 
-                    // Chiediamo i dati numerici solo se i testi sono validi
-                    decimal nuovoPrezzo = LeggiPrezzoPositivo("Inserisci il prezzo del prodotto: ");
-                    int nuovaQta = LeggiInteroPositivo("Inserisci la quantità iniziale disponibile: ");
+                    decimal nuovoPrezzo = LeggiPrezzoPositivo("[REQUISITO] Determinare la tariffa di vendita unitaria: ");
+                    int nuovaQta = LeggiInteroPositivo("[REQUISITO] Caricare lo stock iniziale di magazzino: ");
 
                     try
                     {
                         catalogoProdotti.AggiungiProdotto(new Prodotto(nuovoCod, nuovoNome, nuovoPrezzo, nuovaQta));
-                        Console.WriteLine("\n[OK] Prodotto aggiunto con successo al catalogo.");
+                        Console.WriteLine("\n[√] INVENTARIO AGGIORNATO: Il nuovo articolo è ora disponibile per i clienti.");
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"\n[ERRORE]: {ex.Message}");
+                        Console.WriteLine($"\n[X] OPERAZIONE FALLITA: {ex.Message}");
                     }
                     break;
 
                 case "3":
-                    // Mostra i codici prima di chiedere quale cancellare
                     MostraCatalogo();
-                    Console.WriteLine("---------------------------------------");
-                    Console.Write("Inserisci il codice del prodotto da eliminare dal catalogo: ");
+                    Console.WriteLine("------------------------------------------------------------------");
+                    Console.Write("[REQUISITO] Specificare il codice del prodotto da rimuovere dall'inventario: ");
                     string? codDel = Console.ReadLine()?.Trim();
 
                     if (catalogoProdotti.EliminaProdotto(codDel ?? ""))
-                        Console.WriteLine("\n[OK] Prodotto eliminato correttamente.");
+                        Console.WriteLine("\n[√] INVENTARIO AGGIORNATO: L'articolo è stato rimosso in modo permanente.");
                     else
-                        Console.WriteLine("\n[ERRORE] Prodotto non trovato.");
+                        Console.WriteLine("\n[X] ANOMALIA: Nessuna corrispondenza trovata per il codice inserito.");
                     break;
 
                 case "4":
-                    // Mostra i codici prima di procedere al cambio prezzo
                     MostraCatalogo();
-                    Console.WriteLine("---------------------------------------");
-                    Console.Write("Inserisci il codice del prodotto da modificare: ");
+                    Console.WriteLine("------------------------------------------------------------------");
+                    Console.Write("[RICHIESTA] Inserire il codice del prodotto da riprezzare: ");
                     string? codPrc = Console.ReadLine()?.Trim();
-                    decimal prc = LeggiPrezzoPositivo("Inserisci il nuovo prezzo: ");
+                    decimal prc = LeggiPrezzoPositivo("[RICHIESTA] Digitare il nuovo valore di listino (Euro): ");
 
                     if (catalogoProdotti.ModificaPrezzoProdotto(codPrc ?? "", prc))
-                        Console.WriteLine("\n[OK] Prezzo aggiornato con successo.");
+                        Console.WriteLine("\n[√] LISTINO AGGIORNATO: Il nuovo prezzo è in vigore sul portale clienti.");
                     else
-                        Console.WriteLine("\n[ERRORE] Prodotto non trovato o prezzo errato.");
+                        Console.WriteLine("\n[X] ANOMALIA: Impossibile aggiornare. Verificare l'esistenza del codice prodotto.");
                     break;
 
                 case "5":
-                    // Mostra i prodotti con le relative quantità correnti prima della modifica dello stock
                     MostraCatalogo();
-                    Console.WriteLine("---------------------------------------");
-                    Console.Write("Inserisci il codice del prodotto: ");
+                    Console.WriteLine("------------------------------------------------------------------");
+                    Console.Write("[RICHIESTA] Inserire il codice identificativo della merce: ");
                     string? codStk = Console.ReadLine()?.Trim();
-                    Console.Write("Vuoi aumentare (+) o diminuire (-) lo stock? Digita '+' o '-': ");
+                    Console.Write("[RICHIESTA] Digitare '+' per incrementare lo stock o '-' per decrementarlo: ");
                     string? segno = Console.ReadLine()?.Trim();
-                    int variazione = LeggiInteroPositivo("Inserisci il valore della variazione di unità: ");
+                    int variazione = LeggiInteroPositivo("[RICHIESTA] Indicare l'entità quantitativa della variazione: ");
 
                     if (segno == "-") variazione = -variazione;
                     else if (segno != "+")
                     {
-                        Console.WriteLine("\n[ERRORE] Operazione annullata: Segno non riconosciuto.");
+                        Console.WriteLine("\n[X] OPERAZIONE ANNULLATA: Indicatore di direzione scorte ('+' o '-') non riconosciuto.");
                         break;
                     }
 
                     try
                     {
                         if (catalogoProdotti.ModificaQuantitaProdotto(codStk ?? "", variazione))
-                            Console.WriteLine("\n[OK] Stock aggiornato con successo.");
+                            Console.WriteLine("\n[√] SCORTE AGGIORNATE: La giacenza fisica è stata modificata correttamente.");
                         else
-                            Console.WriteLine("\n[ERRORE] Prodotto non trovato.");
+                            Console.WriteLine("\n[X] ANOMALIA: Codice articolo inesistente nel database logistico.");
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"\n[ERRORE] Errore nell'aggiornamento magazzino: {ex.Message}");
+                        Console.WriteLine($"\n[X] ERRORE LOGISTICO: Impossibile completare la variazione. Dettaglio: {ex.Message}");
                     }
                     break;
 
                 case "6":
                     List<Acquisto> tuttiAcquisti = storicoAcquisti.OttieniTuttiGliAcquisti();
-                    Console.WriteLine("=== STORICO GLOBALE ACQUISTI ===");
-                    if (tuttiAcquisti.Count == 0) Console.WriteLine("Nessun acquisto registrato a sistema.");
+                    Console.WriteLine("==================================================================");
+                    Console.WriteLine("                  REGISTRO REVISIONE AUDIT TRANSATTIVO             ");
+                    Console.WriteLine("==================================================================");
+                    if (tuttiAcquisti.Count == 0) Console.WriteLine("[i] Registro vuoto. Nessuna transazione registrata sul server.");
                     foreach (var acq in tuttiAcquisti)
                     {
                         servizioNegozio.StampaAcquisto(acq);
@@ -385,14 +385,13 @@ public void Avvia()
                     break;
 
                 default:
-                    Console.WriteLine("Opzione non valida.");
+                    Console.WriteLine("[X] NOTA: Selezione non ammessa nel pannello di controllo.");
                     break;
             }
 
-            // Ferma lo schermo prima di ripulire per dare modo all'amministratore di analizzare i dati
             if (inMenu)
             {
-                Console.WriteLine("\nPremi un tasto per continuare...");
+                Console.WriteLine("\nPremere un tasto per tornare al pannello amministrativo...");
                 Console.ReadKey();
             }
         }
