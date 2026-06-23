@@ -397,7 +397,7 @@ public class CatalogoProdotti : IGestioneCatalogo
 
     public bool EliminaProdotto(string codiceProdotto)
 {
-    // Cerchiamo il prodotto sfruttando il metodo case-insensitive già presente
+
     Prodotto? prodotto = CercaProdottoPerCodice(codiceProdotto);
     
     if (prodotto != null)
@@ -423,11 +423,18 @@ public class CatalogoProdotti : IGestioneCatalogo
     }
 
     public bool ModificaPrezzoProdotto(string codiceProdotto, decimal nuovoPrezzo)
+{
+    Prodotto? prodotto = CercaProdottoPerCodice(codiceProdotto);
+    
+    if (prodotto == null)
     {
-        // TODO: trovare il prodotto e chiamare prodotto.CambiaPrezzo(nuovoPrezzo).
-        // Restituire false se il codice non esiste.
-        throw new NotImplementedException("Completare il metodo ModificaPrezzoProdotto.");
+        return false; // Codice non esistente
     }
+
+    // Il metodo CambiaPrezzo della classe Prodotto valida già che il prezzo sia > 0
+    prodotto.CambiaPrezzo(nuovoPrezzo);
+    return true;
+}
 
     public bool ModificaQuantitaProdotto(string codiceProdotto, int variazioneQuantita)
     {
