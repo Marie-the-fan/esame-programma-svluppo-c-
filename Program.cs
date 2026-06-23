@@ -21,10 +21,10 @@ public class Program
         // Punto di ingresso della Console App.
         ApplicazioneNegozio applicazione = new ApplicazioneNegozio();
 
-        // Sblocchiamo l'avvio del negozio reale interattivo
+
         applicazione.Avvia();
 
-        // Se vuoi che i test vengano comunque eseguiti alla chiusura del negozio, lasciarlo attivo:
+
         // TestNegozioOnline.EseguiTuttiITest();
     }
 }
