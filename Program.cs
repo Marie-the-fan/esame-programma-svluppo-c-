@@ -14,14 +14,18 @@ using System.Linq;
  * Vincolo richiesto: tutto il codice è in un unico file .cs e senza namespace.
  */
 
-public class Program
+ public class Program
 {
     public static void Main()
     {
         // Punto di ingresso della Console App.
-
-        // applicazione.Avvia();
-        TestNegozioOnline.EseguiTuttiITest();
+        ApplicazioneNegozio applicazione = new ApplicazioneNegozio();
+        
+        // Sblocchiamo l'avvio del negozio reale interattivo
+        applicazione.Avvia();
+        
+        // Se vuoi che i test vengano comunque eseguiti alla chiusura del negozio, lasciarlo attivo:
+        // TestNegozioOnline.EseguiTuttiITest();
     }
 }
 
@@ -38,7 +42,6 @@ public class ApplicazioneNegozio
         carrelloUtente = new CarrelloUtente();
         storicoAcquisti = new StoricoAcquisti();
         servizioNegozio = new ServizioNegozio(catalogoProdotti, carrelloUtente, storicoAcquisti);
-
         CaricaDatiIniziali();
     }
 
@@ -50,7 +53,39 @@ public class ApplicazioneNegozio
         catalogoProdotti.AggiungiProdotto(new Prodotto("P003", "Monitor 24 pollici", 149.99m, 7));
         catalogoProdotti.AggiungiProdotto(new Prodotto("P004", "Cavo USB-C", 9.99m, 40));
     }
+public void Avvia()
+{
+    Console.Clear();
+    Console.WriteLine("==================================================================");
+    Console.WriteLine("             SISTEMA GESTIONALE - NEXUS RETAILING                 ");
+    Console.WriteLine("                  Sincronizzazione Magazzino v2.4                 ");
+    Console.WriteLine("==================================================================");
+    Console.WriteLine("\n[SISTEMA] Inizializzazione dei moduli completata con successo.");
+    Console.WriteLine("[INFO] Benvenuto nel portale ufficiale del negozio online.");
 
+    bool continua = true;
+    while (continua)
+    {
+        string ruolo = ScegliRuolo();
+        switch (ruolo)
+        {
+            case "utente":
+                GestisciMenuUtente();
+                break;
+            case "amministratore":
+                GestisciMenuAmministratore();
+                break;
+            case "esci":
+                continua = false;
+                Console.Clear();
+                Console.WriteLine("==================================================================");
+                Console.WriteLine("         GRAZIE PER AVER UTILIZZATO I NOSTRI SERVIZI GESTIONALI   ");
+                Console.WriteLine("                      Sessione chiusa correttamente.              ");
+                Console.WriteLine("==================================================================");
+                break;
+        }
+    }
+}
     private string ScegliRuolo()
     {
         while (true)
