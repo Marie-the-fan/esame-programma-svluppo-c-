@@ -42,33 +42,6 @@ public class ApplicazioneNegozio
         CaricaDatiIniziali();
     }
 
-    private string ScegliRuolo()
-{
-    while (true)
-    {
-        // Pulisce la console per tenere la schermata ordinata ad ogni ritorno al menu principale
-        Console.Clear(); 
-        
-        Console.WriteLine("=======================================");
-        Console.WriteLine("            MENU PRINCIPALE            ");
-        Console.WriteLine("=======================================");
-        Console.WriteLine("Scegli come accedere al sistema:");
-        Console.WriteLine("1. Accedi come Cliente (Utente)");
-        Console.WriteLine("2. Accedi come Admin (Amministratore)");
-        Console.WriteLine("0. Chiudi l'applicazione (Esci)");
-        Console.Write("Seleziona un'opzione: ");
-        
-        string? input = Console.ReadLine()?.Trim();
-
-        if (input == "1") return "utente";
-        if (input == "2") return "amministratore";
-        if (input == "0") return "esci";
-
-        Console.WriteLine("Opzione non valida. Premi un tasto per riprovare...");
-        Console.ReadKey(); // Aspetta che l'utente prema un tasto prima di rifare il Clear
-    }
-}
-
     private void CaricaDatiIniziali()
     {
         // Metodo già implementato: fornisce prodotti di partenza per testare subito il sistema.
@@ -82,28 +55,26 @@ public class ApplicazioneNegozio
     {
         while (true)
         {
-            Console.WriteLine("\nScegli come accedere al sistema:");
+            // Pulisce la console per tenere la schermata ordinata ad ogni ritorno al menu principale
+            Console.Clear(); 
+            
+            Console.WriteLine("=======================================");
+            Console.WriteLine("            MENU PRINCIPALE            ");
+            Console.WriteLine("=======================================");
+            Console.WriteLine("Scegli come accedere al sistema:");
             Console.WriteLine("1. Accedi come Cliente (Utente)");
             Console.WriteLine("2. Accedi come Admin (Amministratore)");
             Console.WriteLine("0. Chiudi l'applicazione (Esci)");
             Console.Write("Seleziona un'opzione: ");
-
+            
             string? input = Console.ReadLine()?.Trim();
 
-            if (input == "1")
-            {
-                return "utente";
-            }
-            if (input == "2")
-            {
-                return "amministratore";
-            }
-            if (input == "0")
-            {
-                return "esci";
-            }
+            if (input == "1") return "utente";
+            if (input == "2") return "amministratore";
+            if (input == "0") return "esci";
 
-            Console.WriteLine("Opzione non valida. Inserisci 1, 2 o 0.");
+            Console.WriteLine("\nOpzione non valida. Premi un tasto per riprovare...");
+            Console.ReadKey(); // Aspetta che l'utente prema un tasto prima di rifare il Clear e il ciclo
         }
     }
 
