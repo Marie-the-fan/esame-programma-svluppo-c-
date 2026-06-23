@@ -108,105 +108,139 @@ public class ApplicazioneNegozio
     }
 
     private void GestisciMenuUtente()
+{
+    Console.Write("\nInserisci il tuo nome utente: ");
+    string? nome = Console.ReadLine();
+    if (string.IsNullOrWhiteSpace(nome))
     {
-        Console.Write("\nInserisci il tuo nome utente: ");
-        string? nome = Console.ReadLine();
-        if (string.IsNullOrWhiteSpace(nome))
+        Console.WriteLine("Nome utente non valido. Ritorno al menu principale.");
+        Console.WriteLine("\nPremi un tasto per continuare...");
+        Console.ReadKey();
+        return;
+    }
+    Utente sessioneUtente = new Utente(nome);
+
+    bool inMenu = true;
+    while (inMenu)
+    {
+        Console.Clear(); // Pulisce lo schermo all'inizio di ogni iterazione del menu
+        Console.WriteLine($"=======================================");
+        Console.WriteLine($"   MENU UTENTE - Benvenuto {sessioneUtente.Nome}");
+        Console.WriteLine($"=======================================");
+        Console.WriteLine("1. Visualizza catalogo prodotti");
+        Console.WriteLine("2. Aggiungi prodotto al carrello");
+        Console.WriteLine("3. Visualizza carrello corrente");
+        Console.WriteLine("4. Modifica quantità di un elemento nel carrello");
+        Console.WriteLine("5. Rimuovi prodotto dal carrello");
+        Console.WriteLine("6. Svuota completamente il carrello");
+        Console.WriteLine("7. Conferma e procedi all'acquisto");
+        Console.WriteLine("8. Visualizza il tuo storico acquisti");
+        Console.WriteLine("0. Torna al menu principale");
+        Console.Write("Seleziona un'opzione: ");
+
+        string? scelta = Console.ReadLine();
+        Console.WriteLine(); // Spazio per formattazione
+
+        switch (scelta)
         {
-            Console.WriteLine("Nome utente non valido. Ritorno al menu principale.");
-            return;
+            case "1":
+                MostraCatalogo();
+                break;
+
+            case "2":
+                // Mostra il catalogo per far vedere i codici prima dell'inserimento
+                MostraCatalogo();
+                Console.WriteLine("---------------------------------------");
+                Console.Write("Inserisci il codice del prodotto da aggiungere: ");
+                string? codAdd = Console.ReadLine()?.Trim();
+                int qtaAdd = LeggiInteroPositivo("Inserisci la quantità da acquistare: ");
+                
+                if (servizioNegozio.AggiungiProdottoAlCarrello(codAdd ?? "", qtaAdd))
+                    Console.WriteLine("\n[OK] Prodotto aggiunto correttamente al carrello.");
+                else
+                    Console.WriteLine("\n[ERRORE] Impossibile aggiungere il prodotto. Verifica codice o disponibilità.");
+                break;
+
+            case "3":
+                MostraCarrello();
+                break;
+
+            case "4":
+                // Mostra il carrello per vedere cosa c'è dentro prima di modificarlo
+                MostraCarrello();
+                Console.WriteLine("---------------------------------------");
+                Console.Write("Inserisci il codice del prodotto da modificare nel carrello: ");
+                string? codMod = Console.ReadLine()?.Trim();
+                int qtaMod = LeggiInteroPositivo("Inserisci la nuova quantità totale desiderata: ");
+                
+                if (carrelloUtente.ModificaQuantitaNelCarrello(codMod ?? "", qtaMod))
+                    Console.WriteLine("\n[OK] Quantità modificata con successo.");
+                else
+                    Console.WriteLine("\n[ERRORE] Modifica non riuscita. Controlla il codice o lo stock in magazzino.");
+                break;
+
+            case "5":
+                // Mostra il carrello per vedere i codici degli elementi da rimuovere
+                MostraCarrello();
+                Console.WriteLine("---------------------------------------");
+                Console.Write("Inserisci il codice del prodotto da rimuovere dal carrello: ");
+                string? codRem = Console.ReadLine()?.Trim();
+                
+                if (carrelloUtente.RimuoviDalCarrello(codRem ?? ""))
+                    Console.WriteLine("\n[OK] Prodotto rimosso dal carrello.");
+                else
+                    Console.WriteLine("\n[ERRORE] Prodotto non trovato nel carrello.");
+                break;
+
+            case "6":
+                // Richiesta di conferma di sicurezza prima di svuotare
+                Console.Write("Sei sicuro di voler svuotare completamente il carrello? (s/n): ");
+                string? confermaSvuota = Console.ReadLine()?.Trim().ToLower();
+                if (confermaSvuota == "s" || confermaSvuota == "si")
+                {
+                    carrelloUtente.SvuotaCarrello();
+                    Console.WriteLine("\n[OK] Carrello svuotato.");
+                }
+                else
+                {
+                    Console.WriteLine("\nOperazione annullata. Il carrello è rimasto intatto.");
+                }
+                break;
+
+            case "7":
+                try
+                {
+                    Acquisto confermato = servizioNegozio.ConfermaAcquisto(sessioneUtente);
+                    Console.WriteLine("[SUCCESSO] Acquisto completato con successo!");
+                    servizioNegozio.StampaAcquisto(confermato);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[ERRORE] Errore durante l'acquisto: {ex.Message}");
+                }
+                break;
+
+            case "8":
+                MostraStoricoUtente();
+                break;
+
+            case "0":
+                inMenu = false;
+                break;
+
+            default:
+                Console.WriteLine("Opzione non valida.");
+                break;
         }
-        Utente sessioneUtente = new Utente(nome);
 
-        bool inMenu = true;
-        while (inMenu)
+        // Se l'utente non ha deciso di tornare indietro, blocca lo schermo per fargli leggere l'output
+        if (inMenu)
         {
-            Console.WriteLine($"\n--- MENU UTENTE ({sessioneUtente.Nome}) ---");
-            Console.WriteLine("1. Visualizza catalogo prodotti");
-            Console.WriteLine("2. Aggiungi prodotto al carrello");
-            Console.WriteLine("3. Visualizza carrello corrente");
-            Console.WriteLine("4. Modifica quantità di un elemento nel carrello");
-            Console.WriteLine("5. Rimuovi prodotto dal carrello");
-            Console.WriteLine("6. Svuota completamente il carrello");
-            Console.WriteLine("7. Conferma e procedi all'acquisto");
-            Console.WriteLine("8. Visualizza il tuo storico acquisti");
-            Console.WriteLine("0. Torna al menu principale");
-            Console.Write("Seleziona un'opzione: ");
-
-            string? scelta = Console.ReadLine();
-            switch (scelta)
-            {
-                case "1":
-                    MostraCatalogo();
-                    break;
-                case "2":
-                    Console.Write("Inserisci il codice del prodotto da aggiungere: ");
-                    string? codAdd = Console.ReadLine()?.Trim();
-                    int qtaAdd = LeggiInteroPositivo("Inserisci la quantità da acquistare: ");
-                    if (servizioNegozio.AggiungiProdottoAlCarrello(codAdd ?? "", qtaAdd))
-                        Console.WriteLine("Prodotto aggiunto correttamente al carrello.");
-                    else
-                        Console.WriteLine("Impossibile aggiungere il prodotto. Verifica codice o disponibilità.");
-                    break;
-                case "3":
-                    MostraCarrello();
-                    break;
-                case "4":
-                    Console.Write("Inserisci il codice del prodotto da modificare nel carrello: ");
-                    string? codMod = Console.ReadLine()?.Trim();
-                    int qtaMod = LeggiInteroPositivo("Inserisci la nuova quantità totale desiderata: ");
-                    if (carrelloUtente.ModificaQuantitaNelCarrello(codMod ?? "", qtaMod))
-                        Console.WriteLine("Quantità modificata con successo.");
-                    else
-                        Console.WriteLine("Modifica non riuscita. Controlla il codice o la disponibilità in magazzino.");
-                    break;
-                case "5":
-                    Console.Write("Inserisci il codice del prodotto da rimuovere dal carrello: ");
-                    string? codRem = Console.ReadLine()?.Trim();
-                    if (carrelloUtente.RimuoviDalCarrello(codRem ?? ""))
-                        Console.WriteLine("Prodotto rimosso dal carrello.");
-                    else
-                        Console.WriteLine("Prodotto non trovato nel carrello.");
-                    break;
-                case "6":
-                    Console.Write("Sei sicuro di voler svuotare completamente il carrello? (s/n): ");
-                    string? confermaSvuota = Console.ReadLine()?.Trim().ToLower();
-
-                    if (confermaSvuota == "s" || confermaSvuota == "si")
-                    {
-                        carrelloUtente.SvuotaCarrello();
-                        Console.WriteLine("Carrello svuotato con successo.");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Operazione annullata. Il tuo carrello è rimasto invariato.");
-                    }
-                    break;
-                case "7":
-                    try
-                    {
-                        Acquisto confermato = servizioNegozio.ConfermaAcquisto(sessioneUtente);
-                        Console.WriteLine("\n[SUCCESSO] Acquisto completato!");
-                        servizioNegozio.StampaAcquisto(confermato);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Errore durante l'acquisto: {ex.Message}");
-                    }
-                    break;
-                case "8":
-                    MostraStoricoUtente();
-                    break;
-                case "0":
-                    inMenu = false;
-                    break;
-                default:
-                    Console.WriteLine("Opzione non valida.");
-                    break;
-            }
+            Console.WriteLine("\nPremi un tasto per continuare...");
+            Console.ReadKey();
         }
     }
-
+}
     private void GestisciMenuAmministratore()
     {
         bool inMenu = true;
