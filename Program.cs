@@ -190,12 +190,24 @@ public class ApplicazioneNegozio
         {
             return valore;
         }
-        Console.WriteLine("Input non valido. Inserisci un numero intero strettamente maggiore di zero.");
+        Console.WriteLine("Input non valido. Inserisci un numero intero maggiore di zero.");
     }
 }
-
-   
+private decimal LeggiPrezzoPositivo(string messaggio)
+{
+    decimal valore;
+    while (true)
+    {
+        Console.Write(messaggio);
+        string? input = Console.ReadLine();
+        if (decimal.TryParse(input, out valore) && valore > 0)
+        {
+            return valore;
+        }
+        Console.WriteLine("Input non valido. Inserisci un prezzo (decimale) maggiore di zero.");
+    }
 }
+   
 
 public interface IGestioneCatalogo
 {
@@ -384,11 +396,18 @@ public class CatalogoProdotti : IGestioneCatalogo
     }
 
     public bool EliminaProdotto(string codiceProdotto)
+{
+    // Cerchiamo il prodotto sfruttando il metodo case-insensitive già presente
+    Prodotto? prodotto = CercaProdottoPerCodice(codiceProdotto);
+    
+    if (prodotto != null)
     {
-        // TODO: cercare il prodotto tramite codice e rimuoverlo dalla lista.
-        // Restituire true se il prodotto è stato eliminato, false se non esiste.
-        throw new NotImplementedException("Completare il metodo EliminaProdotto.");
+        prodotti.Remove(prodotto);
+        return true; // Prodotto trovato ed eliminato
     }
+    
+    return false; // Prodotto non trovato
+}
 
     public Prodotto? CercaProdottoPerCodice(string codiceProdotto)
     {
@@ -612,4 +631,5 @@ public class ReportProdotto
         QuantitaVenduta = quantitaVenduta;
         QuantitaDisponibile = quantitaDisponibile;
     }
+}
 }
