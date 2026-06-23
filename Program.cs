@@ -42,16 +42,35 @@ public class ApplicazioneNegozio
         CaricaDatiIniziali();
     }
 
-    public void Avvia()
+   public void Avvia()
+{
+    Console.WriteLine("=======================================");
+    Console.WriteLine("   BENVENUTO NEL NOSTRO NEGOZIO ONLINE ");
+    Console.WriteLine("=======================================");
+
+    bool continua = true;
+    while (continua)
     {
-        // TODO: implementare il ciclo principale della Console App.
-        // Suggerimento:
-        // 1. mostrare un messaggio di benvenuto;
-        // 2. chiedere se l'utente vuole entrare come "utente" o "amministratore";
-        // 3. chiamare GestisciMenuUtente oppure GestisciMenuAmministratore;
-        // 4. permettere l'uscita dal programma con una scelta dedicata.
-        throw new NotImplementedException("Completare il metodo Avvia.");
+        string ruolo = ScegliRuolo();
+        switch (ruolo)
+        {
+            case "utente":
+                GestisciMenuUtente();
+                break;
+            case "amministratore":
+                GestisciMenuAmministratore();
+                break;
+            case "esci":
+                continua = false;
+                Console.WriteLine("\nGrazie per aver visitato il nostro negozio. Arrivederci!");
+                break;
+            default:
+                // Questo default teoricamente non verrà mai raggiunto grazie alla convalida in ScegliRuolo
+                Console.WriteLine("Scelta non valida. Riprova.");
+                break;
+        }
     }
+}
 
     private void CaricaDatiIniziali()
     {
