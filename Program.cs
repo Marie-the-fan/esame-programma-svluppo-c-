@@ -99,6 +99,7 @@ public class ApplicazioneNegozio
         throw new NotImplementedException("Completare il metodo GestisciMenuAmministratore.");
     }
 
+
     private void MostraCatalogo()
     {
         // Metodo già implementato: mostra a video tutti i prodotti del catalogo.
@@ -207,7 +208,7 @@ private decimal LeggiPrezzoPositivo(string messaggio)
         Console.WriteLine("Input non valido. Inserisci un prezzo (decimale) maggiore di zero.");
     }
 }
-   
+}
 
 public interface IGestioneCatalogo
 {
@@ -450,7 +451,7 @@ public class CatalogoProdotti : IGestioneCatalogo
     prodotto.CambiaQuantita(variazioneQuantita);
     return true;
 }
-
+}
 public class CarrelloUtente : IGestioneCarrello
 {
     private readonly List<ElementoCarrello> elementiCarrello;
@@ -645,5 +646,4 @@ public class ReportProdotto
         QuantitaVenduta = quantitaVenduta;
         QuantitaDisponibile = quantitaDisponibile;
     }
-}
 }
