@@ -71,19 +71,94 @@ public class ApplicazioneNegozio
     }
 
     private void GestisciMenuUtente()
+{
+    Console.Write("\nInserisci il tuo nome utente: ");
+    string? nome = Console.ReadLine();
+    if (string.IsNullOrWhiteSpace(nome))
     {
-        // TODO: implementare il menu utente.
-        // Operazioni richieste dalla traccia:
-        // - visualizzare catalogo;
-        // - aggiungere prodotto al carrello;
-        // - visualizzare carrello;
-        // - modificare quantità nel carrello;
-        // - rimuovere prodotto dal carrello;
-        // - svuotare carrello;
-        // - confermare acquisto;
-        // - visualizzare storico acquisti dell'utente.
-        throw new NotImplementedException("Completare il metodo GestisciMenuUtente.");
+        Console.WriteLine("Nome utente non valido. Ritorno al menu principale.");
+        return;
     }
+    Utente sessioneUtente = new Utente(nome);
+
+    bool inMenu = true;
+    while (inMenu)
+    {
+        Console.WriteLine($"\n--- MENU UTENTE ({sessioneUtente.Nome}) ---");
+        Console.WriteLine("1. Visualizza catalogo prodotti");
+        Console.WriteLine("2. Aggiungi prodotto al carrello");
+        Console.WriteLine("3. Visualizza carrello corrente");
+        Console.WriteLine("4. Modifica quantità di un elemento nel carrello");
+        Console.WriteLine("5. Rimuovi prodotto dal carrello");
+        Console.WriteLine("6. Svuota completamente il carrello");
+        Console.WriteLine("7. Conferma e procedi all'acquisto");
+        Console.WriteLine("8. Visualizza il tuo storico acquisti");
+        Console.WriteLine("0. Torna al menu principale");
+        Console.Write("Seleziona un'opzione: ");
+
+        string? scelta = Console.ReadLine();
+        switch (scelta)
+        {
+            case "1":
+                MostraCatalogo();
+                break;
+            case "2":
+                Console.Write("Inserisci il codice del prodotto da aggiungere: ");
+                string? codAdd = Console.ReadLine()?.Trim();
+                int qtaAdd = LeggiInteroPositivo("Inserisci la quantità da acquistare: ");
+                if (servizioNegozio.AggiungiProdottoAlCarrello(codAdd ?? "", qtaAdd))
+                    Console.WriteLine("Prodotto aggiunto correttamente al carrello.");
+                else
+                    Console.WriteLine("Impossibile aggiungere il prodotto. Verifica codice o disponibilità.");
+                break;
+            case "3":
+                MostraCarrello();
+                break;
+            case "4":
+                Console.Write("Inserisci il codice del prodotto da modificare nel carrello: ");
+                string? codMod = Console.ReadLine()?.Trim();
+                int qtaMod = LeggiInteroPositivo("Inserisci la nuova quantità totale desiderata: ");
+                if (carrelloUtente.ModificaQuantitaNelCarrello(codMod ?? "", qtaMod))
+                    Console.WriteLine("Quantità modificata con successo.");
+                else
+                    Console.WriteLine("Modifica non riuscita. Controlla il codice o la disponibilità in magazzino.");
+                break;
+            case "5":
+                Console.Write("Inserisci il codice del prodotto da rimuovere dal carrello: ");
+                string? codRem = Console.ReadLine()?.Trim();
+                if (carrelloUtente.RimuoviDalCarrello(codRem ?? ""))
+                    Console.WriteLine("Prodotto rimosso dal carrello.");
+                else
+                    Console.WriteLine("Prodotto non trovato nel carrello.");
+                break;
+            case "6":
+                carrelloUtente.SvuotaCarrello();
+                Console.WriteLine("Carrello svuotato.");
+                break;
+            case "7":
+                try
+                {
+                    Acquisto confermato = servizioNegozio.ConfermaAcquisto(sessioneUtente);
+                    Console.WriteLine("\n[SUCCESSO] Acquisto completato!");
+                    servizioNegozio.StampaAcquisto(confermato);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Errore durante l'acquisto: {ex.Message}");
+                }
+                break;
+            case "8":
+                MostraStoricoUtente();
+                break;
+            case "0":
+                inMenu = false;
+                break;
+            default:
+                Console.WriteLine("Opzione non valida.");
+                break;
+        }
+    }
+}
 
     private void GestisciMenuAmministratore()
     {
