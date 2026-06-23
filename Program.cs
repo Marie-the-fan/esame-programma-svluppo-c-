@@ -565,11 +565,11 @@ public class StoricoAcquisti : IGestioneAcquisti
     }
 
     public List<Acquisto> OttieniAcquistiPerUtente(string nomeUtente)
-    {
-        // TODO: filtrare gli acquisti per nome utente.
-        // Consiglio: usare StringComparison.OrdinalIgnoreCase per ignorare maiuscole/minuscole.
-        throw new NotImplementedException("Completare il metodo OttieniAcquistiPerUtente.");
-    }
+{
+    return acquisti
+        .Where(acquisto => acquisto.NomeUtente.Equals(nomeUtente, StringComparison.OrdinalIgnoreCase))
+        .ToList();
+}
 }
 
 public class ServizioNegozio
